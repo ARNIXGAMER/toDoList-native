@@ -1,9 +1,12 @@
+import "expo-router/entry";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import { useState } from "react";
-import { funtionsContext } from "./Context/funtionsContext";
-import Input from "./Components/Input";
-import List from "./Components/List";
+import { funtionsContext } from "../Context/funtionsContext";
+import Input from "../Components/Input";
+import List from "../Components/List";
+import Button from "../Components/Button";
+import { Link, Stack } from "expo-router";
 
 export default function App() {
   const [task, setTask] = useState("");
@@ -51,6 +54,9 @@ export default function App() {
   console.log(tasks)
   return (
     <View style={styles.container}>
+        <Stack.Screen options={{
+            title:"Home"
+        }} />
       <funtionsContext.Provider value={{
         createTask,
         deleteTask,
@@ -66,6 +72,7 @@ export default function App() {
         <Text>To Do List</Text>
         <Input task={task} setTask={setTask} createTask={createTask} />
         <List tasks={tasks} />
+        <Link href={"/auth"}>Go to login</Link>
         <StatusBar style="auto" />
       </funtionsContext.Provider>
     </View>
@@ -74,11 +81,9 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "flex-start",
-    marginTop: 60,
     paddingHorizontal: 15
   },
 });

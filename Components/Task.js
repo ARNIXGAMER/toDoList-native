@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
-import Button from "./Button";
 import { useContext, useState } from "react";
-import Input from "./Input";
 import { funtionsContext } from "../Context/funtionsContext";
+import Button from "./Button";
+import Input from "./Input";
+import { Link, Navigator } from "expo-router";
 
 
 export default function Task ({title, done, id}) {
@@ -12,7 +13,7 @@ export default function Task ({title, done, id}) {
     return (
       <View style={styles.taskContainer}>
         {editMode ? <Input setTask={setEditabledTask} task={editabledTask} createTask={()=>{editTask(id)
-        setEditMode(!editMode)}} /> : <Text>{title}</Text>}
+        setEditMode(!editMode)}} /> : <Link href={{pathname: `/${id}`, params:{title,done,id}}} ><Text>{title}</Text></Link>}
         <View style={styles.buttons}>
 
         <Button onPress={()=>completeTask(id)} label={done ? 'o' : 'x'}/>
