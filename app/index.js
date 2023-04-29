@@ -5,7 +5,6 @@ import { useState } from "react";
 import { funtionsContext } from "../Context/funtionsContext";
 import Input from "../Components/Input";
 import List from "../Components/List";
-import Button from "../Components/Button";
 import { Link, Stack } from "expo-router";
 
 export default function App() {

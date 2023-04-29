@@ -1,7 +1,7 @@
 import { Text, View, TextInput, Button, Alert } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigation } from "expo-router";
-import { signInWithEmailAndPassword  } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
 
 export default function App() {
@@ -19,7 +19,7 @@ export default function App() {
   const onSubmit = (data) => {
     console.log(data)
     if (data.email !== '' && data.password !== '') {
-      const validate = signInWithEmailAndPassword(auth, data.email, data.password)
+      const validate = createUserWithEmailAndPassword(auth, data.email, data.password)
     .then((userCredential) => {
       // Signed in
       const user = userCredential.user;
@@ -33,9 +33,9 @@ export default function App() {
       alert(errorCode,errorMessage)
       // ..
     });
-    if(validate){
-      alert('Acceso permitido')
-      navigation.navigate("index");
+    if(validate.accessToken){
+      alert('Usuario creado con existo')
+      navigation.navigate("/auth");
     }
     } else {
       alert("Datos incorrectos");
@@ -82,7 +82,7 @@ export default function App() {
       />
       {errors.password && <Text>This is required.</Text>}
 
-      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+      <Button title="Registrarse" onPress={handleSubmit(onSubmit)} />
 
     </View>
   );
