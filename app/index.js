@@ -1,73 +1,62 @@
 import "expo-router/entry";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { funtionsContext } from "../Context/funtionsContext";
 import Input from "../Components/Input";
 import List from "../Components/List";
-import { Link, Stack } from "expo-router";
+import { Link, Navigator, Redirect, Stack } from "expo-router";
+import { createTaskDb, findTasksDb } from "../DataBase/createData";
+import getUser from "../DataBase/getUser";
 
 export default function App() {
+  const user = getUser()
   const [task, setTask] = useState("");
   const [editabledTask, setEditabledTask] = useState("");
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([])
 
   const createTask = () => {
-    setTasks([...tasks, { title: task, done: false, id: tasks.length }]);
     setTask("");
+    createTaskDb({ title: task, done: false, userId:user.uid });
+    updateTasks()
   };
   const deleteTask = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+
   };
   const editTask = (id) => {
-    setTasks((prevTasks) => {
-      const newTasks = prevTasks.map((task) => {
-        if (task.id === id) {
-          return {
-            ...task,
-            title: editabledTask || task.title,
-          };
-        }else{
-          return task
-        }
-      });
-      return newTasks;
-    });
-    setEditabledTask('')
+    
+    setEditabledTask("");
   };
   const completeTask = (id) => {
-    setTasks((prevTasks) => {
-      const newTasks = prevTasks.map((task) => {
-        if (task.id === id) {
-          return {
-            ...task,
-            done: !task.done,
-          };
-        }else{
-          return task
-        }
-      });
-      return newTasks;
-    });
+    
+  };
+  const updateTasks = async() =>{
+    setTasks(await findTasksDb(user?.uid))
   }
-  console.log(tasks)
+console.log(tasks,user)
+  useEffect(()=>{
+    updateTasks()
+  },[user])
   return (
     <View style={styles.container}>
-        <Stack.Screen options={{
-            title:"Home"
-        }} />
-      <funtionsContext.Provider value={{
-        createTask,
-        deleteTask,
-        editTask,
-        task,
-        setTask,
-        tasks,
-        setTasks,
-        editabledTask,
-        setEditabledTask,
-        completeTask
-      }}>
+      <Stack.Screen
+        options={{
+          title: "Home",
+        }}
+      />
+      <funtionsContext.Provider
+        value={{
+          createTask,
+          deleteTask,
+          editTask,
+          task,
+          setTask,
+          tasks,
+          editabledTask,
+          setEditabledTask,
+          completeTask,
+        }}
+      >
         <Text>To Do List</Text>
         <Input task={task} setTask={setTask} createTask={createTask} />
         <List tasks={tasks} />
@@ -83,6 +72,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
   },
 });

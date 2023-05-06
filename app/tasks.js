@@ -1,9 +1,13 @@
 import List from "../Components/List";
 import { useSearchParams } from "expo-router";
+import { findTasksDb } from "../DataBase/createData";
+import { View } from "react-native-web";
 
 export default function renderTasks(){
-    const {tasks} = useSearchParams()
+    
     return (
-        <List tasks={tasks}/>
+        <View>
+            <List/>
+        </View>
     )
 }

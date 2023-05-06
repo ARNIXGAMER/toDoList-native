@@ -3,6 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useNavigation } from "expo-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
+import createData from "../../DataBase/createData";
 
 export default function App() {
   const navigation = useNavigation();
@@ -16,33 +17,25 @@ export default function App() {
       password: "",
     },
   });
-  const onSubmit = (data) => {
-    console.log(data)
-    if (data.email !== '' && data.password !== '') {
-      const validate = createUserWithEmailAndPassword(auth, data.email, data.password)
-    .then((userCredential) => {
-      // Signed in
-      const user = userCredential.user;
-      console.log(user)
-      return user
-      // ...
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      alert(errorCode,errorMessage)
-      // ..
-    });
-    if(validate.accessToken){
-      alert('Usuario creado con existo')
-      navigation.navigate("/auth");
-    }
-    } else {
-      alert("Datos incorrectos");
+  const onSubmit = async (data) => {
+    if (data.email !== "" && data.password !== "") {
+      try {
+        const validate = await createUserWithEmailAndPassword(
+          auth,
+          data.email,
+          data.password
+        );
+          console.log(validate)
+        if (validate.user.accessToken) {
+          alert("Usuario creado con existo");
+          navigation.navigate("/auth");
+        }
+      } catch (error) {
+        alert("Datos incorrectos o el usuario ya existe");
+        console.log(error);
+      }
     }
   };
-
-  
 
   return (
     <View>
@@ -57,7 +50,6 @@ export default function App() {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            textContentType="email"
           />
         )}
         name="email"
@@ -75,7 +67,6 @@ export default function App() {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            textContentType="password"
           />
         )}
         name="password"
@@ -83,7 +74,6 @@ export default function App() {
       {errors.password && <Text>This is required.</Text>}
 
       <Button title="Registrarse" onPress={handleSubmit(onSubmit)} />
-
     </View>
   );
 }
