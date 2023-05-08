@@ -4,19 +4,23 @@ import { funtionsContext } from "../Context/funtionsContext";
 import Button from "./Button";
 import Input from "./Input";
 import { Link, Navigator } from "expo-router";
+import { set } from "react-hook-form";
 
 
 export default function Task ({title, done, id}) {
-    const { deleteTask , editabledTask , setEditabledTask, editTask , completeTask} = useContext(funtionsContext);
+    const { deleteTask , editabledTask , setEditabledTask, editTask , setDoneTask} = useContext(funtionsContext);
     const [editMode,setEditMode] = useState(false)
+    const InputEdit = () =>{
+      editTask(id)
+      setEditMode(!editMode)
+    }
     
     return (
       <View style={styles.taskContainer}>
-        {editMode ? <Input setTask={setEditabledTask} task={editabledTask} createTask={()=>{editTask(id)
-        setEditMode(!editMode)}} /> : <Link href={{pathname: `/${id}`, params:{title,done,id}}} ><Text>{title}</Text></Link>}
+        {editMode ? <Input setTask={setEditabledTask} task={editabledTask} createTask={InputEdit} /> : <Link href={{pathname: `/${id}`, params:{title,done,id}}} ><Text>{title}</Text></Link>}
         <View style={styles.buttons}>
 
-        <Button onPress={()=>completeTask(id)} label={done ? 'o' : 'x'}/>
+        <Button onPress={()=>editTask(id)} label={done ? 'o' : 'x'}/>
         {editMode ? <Button onPress={()=>setEditMode(!editMode)} label={'Cancel'}/> : ''}
         <Button onPress={()=>deleteTask(id)} label={'Delete'}/>
         <Button onPress={()=>{setEditMode(!editMode)

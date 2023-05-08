@@ -1,6 +1,8 @@
 import { Link , Tabs, Stack } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 
 export default function tabLayout(){
@@ -17,14 +19,24 @@ export default function tabLayout(){
                 }}
             />
             <Tabs.Screen
-                name="tasks"
+                name="Auth/index"
                 options={{
-                    tabBarIcon: ()=><FontAwesome5 name="tasks" size={24} color="black" />,
+                    tabBarIcon: ()=><AntDesign name="login" size={24} color="black" />,
                     href:{
-                        pathname:"/tasks",
+                        pathname:"/Auth/",
                         params:{}
                     },
-                    title:"Tasks"
+                    title:"Login"
+                }}
+            />
+            <Tabs.Screen
+                name="/Auth/signUp"
+                options={{
+                    tabBarIcon: ()=><Ionicons name="md-person-add-outline" size={24} color="black" />,
+                    href:{
+                        pathname:"/Auth/signUp",
+                    },
+                    title:"SignUp"
                 }}
             />
         </Tabs>

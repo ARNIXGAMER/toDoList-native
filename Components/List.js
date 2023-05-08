@@ -10,7 +10,7 @@ export default function List({ tasks }) {
         renderItem={({ item }) => (
           <Task title={item.title} done={item.done} id={item.id} />
         )}
-        keyExtractor={(item) => item.userId}
+        keyExtractor={(item) => item.id}
       />
     </View>
   );

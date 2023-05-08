@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import { funtionsContext } from "../Context/funtionsContext";
 import Input from "../Components/Input";
 import List from "../Components/List";
-import { Link, Navigator, Redirect, Stack } from "expo-router";
-import { createTaskDb, findTasksDb } from "../DataBase/createData";
+import { Stack } from "expo-router";
+import { createTaskDb, deleteTaskDb, findTasksDb, updateTaskDb } from "../DataBase/createData";
 import getUser from "../DataBase/getUser";
+import { v4 as uuid } from "uuid";
+import Button from "../Components/Button";
 
 export default function App() {
   const user = getUser()
@@ -16,19 +18,19 @@ export default function App() {
   const [tasks, setTasks] = useState([])
 
   const createTask = () => {
+    createTaskDb({ title: task, done: false, userId:user.uid,id:uuid() });
+    updateTasks()
     setTask("");
-    createTaskDb({ title: task, done: false, userId:user.uid });
+  };
+  const deleteTask = (taskId) => {
+    deleteTaskDb(taskId)
     updateTasks()
   };
-  const deleteTask = (id) => {
-
-  };
-  const editTask = (id) => {
-    
+  const editTask = (taskId) => {
+    const oldTask = tasks.filter(task => task.id === taskId)
+    updateTaskDb(taskId,{title:editabledTask},oldTask[0])
     setEditabledTask("");
-  };
-  const completeTask = (id) => {
-    
+    updateTasks();
   };
   const updateTasks = async() =>{
     setTasks(await findTasksDb(user?.uid))
@@ -36,14 +38,9 @@ export default function App() {
 console.log(tasks,user)
   useEffect(()=>{
     updateTasks()
-  },[user])
+  },[])
   return (
     <View style={styles.container}>
-      <Stack.Screen
-        options={{
-          title: "Home",
-        }}
-      />
       <funtionsContext.Provider
         value={{
           createTask,
@@ -54,13 +51,13 @@ console.log(tasks,user)
           tasks,
           editabledTask,
           setEditabledTask,
-          completeTask,
         }}
       >
         <Text>To Do List</Text>
         <Input task={task} setTask={setTask} createTask={createTask} />
+        {user ? user.uid : 'No logged'}
+        <Button onPress={()=>updateTasks()} label={'Refresh tasks'}/>
         <List tasks={tasks} />
-        <Link href={"/auth"}>Go to login</Link>
         <StatusBar style="auto" />
       </funtionsContext.Provider>
     </View>
