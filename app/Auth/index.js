@@ -1,12 +1,13 @@
 import { Text, View, TextInput, Button, Alert } from "react-native";
 import { useForm, Controller } from "react-hook-form";
-import { useNavigation } from "expo-router";
+import { Stack, useNavigation, useRouter } from "expo-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
 import createData, { findUser } from "../../DataBase/createData";
 
 export default function App() {
   const navigation = useNavigation();
+  const router = useRouter()
   const {
     control,
     handleSubmit,
@@ -27,7 +28,7 @@ export default function App() {
         )
         if (validate.user.accessToken) {
           alert("Acceso permitido");
-          navigation.navigate("index");
+          navigation.goBack()
         } else {
           
         }
@@ -40,6 +41,9 @@ export default function App() {
 
   return (
     <View>
+      <Stack.Screen options={{
+        title:"Login"
+      }}/>
       <Controller
         control={control}
         rules={{

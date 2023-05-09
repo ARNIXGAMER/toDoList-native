@@ -14,17 +14,20 @@ export default function Task ({title, done, id}) {
       editTask(id)
       setEditMode(!editMode)
     }
+    const handleEdit = () =>{
+      setEditMode(!editMode)
+      setEditabledTask(title)
+    }
     
     return (
       <View style={styles.taskContainer}>
         {editMode ? <Input setTask={setEditabledTask} task={editabledTask} createTask={InputEdit} /> : <Link href={{pathname: `/${id}`, params:{title,done,id}}} ><Text>{title}</Text></Link>}
         <View style={styles.buttons}>
 
-        <Button onPress={()=>editTask(id)} label={done ? 'o' : 'x'}/>
+        {!editMode ? <Button onPress={()=>editTask(id)} label={done ? 'o' : 'x'}/> : ''}
         {editMode ? <Button onPress={()=>setEditMode(!editMode)} label={'Cancel'}/> : ''}
-        <Button onPress={()=>deleteTask(id)} label={'Delete'}/>
-        <Button onPress={()=>{setEditMode(!editMode)
-        setEditabledTask(title)}} label={'Edit'}/>
+        {!editMode ? <Button onPress={()=>deleteTask(id)} label={'Delete'}/> : ''}
+        {!editMode ? <Button onPress={handleEdit} label={'Edit'}/> : ''}
         </View>
       </View>
     )
