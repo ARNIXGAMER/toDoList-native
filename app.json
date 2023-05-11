@@ -5,6 +5,9 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "myapp",
+    "extra": {
+      "serverUrl": "https://23ff-181-122-153-111.ngrok-free.app"
+    },
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {

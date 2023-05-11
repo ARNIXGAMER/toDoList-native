@@ -16,7 +16,6 @@ export const createTaskDb = async ({ title, done, userId }) => {
 };
 
 export const deleteTaskDb = async (taskId) => {
-  console.log(taskId)
   const querySnapshot = await deleteDoc(doc(db, 'tasks',taskId));
   console.log(querySnapshot)
 };
@@ -42,10 +41,9 @@ export const findTaskDb = async (taskId) => {
     console.log(error)
   }
 };
-export const updateTaskDb = async (taskId,newTask,oldTask) => {
-  console.log(taskId,newTask,oldTask, 'tasks')
+export const updateTaskDb = async (taskId,updateTask) => {
   try {
-    const taskUpdated = await updateDoc(doc(db, "tasks",taskId),{title:newTask.title !== '' ? newTask.title : oldTask.title, done: newTask.title === '' ? !oldTask.done : oldTask.done});
+    const taskUpdated = await updateDoc(doc(db, "tasks",taskId),updateTask);
     console.log(taskUpdated)
   } catch (error) {
     console.log(error)

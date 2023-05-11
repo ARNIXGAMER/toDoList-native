@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
+import { getMessaging } from "firebase/messaging";
 import {
   FIREBASE_API_KEY,
   FIREBASE_AUTH_DOMAIN,
@@ -30,6 +31,7 @@ console.log("funciona");
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app)
-export const db = getFirestore(app);
+const auth = getAuth(app)
+const db = getFirestore(app);
+const messaging = getMessaging(app)
 //const analytics = getAnalytics(app);
