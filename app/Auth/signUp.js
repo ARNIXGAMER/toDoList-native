@@ -1,11 +1,10 @@
 import { Text, View, TextInput, Button, Alert } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigation } from "expo-router";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase";
-import createData from "../../DataBase/createData";
+import { createUserWithEmailAndPassword,getAuth } from "firebase/auth";
 
 export default function App() {
+  const auth = getAuth()
   const navigation = useNavigation();
   const {
     control,

@@ -1,7 +1,6 @@
 import "expo-router/entry";
-import "../messaging_init_in_sw";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { funtionsContext } from "../Context/funtionsContext";
 import Input from "../Components/Input";
@@ -16,53 +15,69 @@ import {
 import getUser from "../DataBase/getUser";
 import { v4 as uuid } from "uuid";
 import Button from "../Components/Button";
-import { pushPermission, pushToken, reciveMessage } from "../services/pushNotification";
 
 export default function App() {
-  const user = getUser();
+  const user = getUser()
+  const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState("");
   const [editabledTask, setEditabledTask] = useState("");
-  const [tasks, setTasks] = useState([]);
+  const [icon,setIcon] = useState(null)
+  const [editIcon,setEditIcon] = useState(null)
+  const [userData,setUserData] = useState(user)
 
   const createTask = () => {
-    const newtask = { title: task, done: false, userId: user.uid, id: uuid() }
-    setTasks([...tasks,newtask])
-    createTaskDb(newtask);
-    setTask("");
+    if(user?.uid){
+      const newtask = { title: task, icon, done: false, userId: user.uid, id: uuid() }
+      setTasks([...tasks,newtask])
+      createTaskDb(newtask);
+      setTask("");
+      setIcon("");
+    }else{
+      alert("You need an account to create tasks")
+    }
+    setTimeout(()=>{
+      updateTasks();
+    },3000)
   };
   const deleteTask = (taskId) => {
     deleteTaskDb(taskId);
     setTasks(tasks.filter(task =>{
       return task.id !== taskId
     }))
+    setTimeout(()=>{
+      updateTasks();
+    },3000)
   };
   const editTask = (taskId) => {
-    const updateTasks = tasks.map((task) =>{
+    const updateTasksArry = tasks.map((task) =>{
       if(task.id === taskId){
         return {...task,
           title: editabledTask ? editabledTask : task.title,
+          icon: editIcon ? editIcon : task.icon,
           done: !editabledTask ? !task.done : task.done
         }
       }else{
         return task
       }
     });
-    const toUpdateTasks = updateTasks.filter(task => task.id === taskId)
-    setTasks(updateTasks)
+    const toUpdateTasks = updateTasksArry.filter(task => task.id === taskId)
+    setTasks(updateTasksArry)
     updateTaskDb(taskId,toUpdateTasks[0]);
     setEditabledTask("");
+    setIcon(null);
+    setTimeout(()=>{
+      updateTasks()
+    },3000)
   };
   const updateTasks = async () => {
     setTasks(await findTasksDb(user?.uid));
   };
-  console.log(tasks, user);
+  console.log(tasks, user,icon);
   useEffect(() => {
-    updateTasks();
-    //pushPermission()
-    if(user){
-      //pushToken()
-    }
-  }, [user]);
+      if(user?.uid){
+        updateTasks()
+      }
+  }, []);
   return (
     <View style={styles.container}>
       <Stack.Screen
@@ -80,16 +95,19 @@ export default function App() {
           tasks,
           editabledTask,
           setEditabledTask,
+          setIcon,
+          icon,
+          setEditIcon,
+          editIcon
         }}
       >
         {!user ? <View style={styles.auth}>
           <Link style={styles.button} href={"/Auth"}>Login</Link>
           <Link style={styles.button} href={"/Auth/signUp"}>SignUp</Link>
         </View> : ''}
-        <Text>To Do List</Text>
+        <h1>To Do List</h1>
         <Input task={task} setTask={setTask} createTask={createTask} />
-        {user ? user.uid : "No logged"}
-        <Button onPress={() => updateTasks()} label={"Refresh tasks"} />
+        <Button onPress={() => updateTasks()} label={"Actualizar"} />
         <List tasks={tasks} />
         <StatusBar style="auto" />
       </funtionsContext.Provider>

@@ -8,7 +8,7 @@ export default function List({ tasks }) {
       <FlatList
         data={tasks}
         renderItem={({ item }) => (
-          <Task title={item.title} done={item.done} id={item.id} />
+          <Task title={item.title} icon={item.icon} done={item.done} id={item.id} />
         )}
         keyExtractor={(item) => item.id}
       />
